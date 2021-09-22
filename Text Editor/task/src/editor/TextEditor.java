@@ -1,5 +1,6 @@
 package editor;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.text.JTextComponent;
 import java.awt.*;
@@ -8,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 
 public class TextEditor extends JFrame {
 
@@ -32,7 +34,7 @@ public class TextEditor extends JFrame {
         JButton saveButton = new JButton();
         saveButton.setName("SaveButton");
         saveButton.setText("Save");
-        saveButton.setBounds(440, 20, 100, 30);
+        saveButton.setBounds(440, 20, 50, 50);
         add(saveButton);
         saveButton.addActionListener(new ActionListener() {
 
@@ -41,11 +43,11 @@ public class TextEditor extends JFrame {
                 save();
             }
         });
-
-        JButton loadButton = new JButton();
+        System.out.println(new File(" ").getAbsolutePath());
+        Icon icon = new ImageIcon("./open.png");
+        JButton loadButton = new JButton(icon);
         loadButton.setName("LoadButton");
-        loadButton.setText("Load");
-        loadButton.setBounds(550, 20, 100, 30);
+        loadButton.setBounds(550, 20, 50, 50);
         add(loadButton);
         loadButton.addActionListener(new ActionListener() {
 
