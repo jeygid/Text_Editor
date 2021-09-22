@@ -8,11 +8,11 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
 
 public class TextEditor extends JFrame {
 
     public JTextComponent textArea;
+    public JTextField filePath;
 
     public TextEditor() {
 
@@ -23,10 +23,10 @@ public class TextEditor extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
 
-        JTextField filePath = new JTextField();
+        filePath = new JTextField();
         filePath.setName("FilenameField");
         filePath.setText("");
-        filePath.setBounds(20,20, 400, 30);
+        filePath.setBounds(20, 20, 400, 30);
         add(filePath);
 
         JButton saveButton = new JButton();
@@ -38,18 +38,7 @@ public class TextEditor extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                File file = new File(filePath.getText());
-
-                try (FileWriter fileWriter = new FileWriter(file)) {
-
-                    fileWriter.write(textArea.getText());
-                    fileWriter.flush();
-
-                } catch (IOException exception) {
-                    exception.printStackTrace();
-                }
-
+                save();
             }
         });
 
@@ -59,21 +48,10 @@ public class TextEditor extends JFrame {
         loadButton.setBounds(550, 20, 100, 30);
         add(loadButton);
         loadButton.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                File file = new File(filePath.getText());
-
-                String fileText = "";
-
-                try {
-                    fileText = Files.readString(Paths.get(file.getPath()));
-                } catch (IOException fileNotFoundException) {
-                    fileNotFoundException.printStackTrace();
-                }
-
-              textArea.setText(fileText);
-
+                load();
             }
         });
 
@@ -89,14 +67,83 @@ public class TextEditor extends JFrame {
         textScroll.setBounds(20, 70, 630, 550);
         add(textScroll);
 
-        JMenu menu = new JMenu();
-        menu.setName("MenuFile");
-        setVisible(true);
-        textScroll.setBounds(20, 20, 300, 50);
-        add(menu);
+        JMenuBar menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.setName("MenuFile");
 
+        JMenuItem saveMenuItem = new JMenuItem("Save");
+        saveMenuItem.setName("MenuSave");
+        JMenuItem loadMenuItem = new JMenuItem("Load");
+        loadMenuItem.setName("MenuLoad");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
+        exitMenuItem.setName("MenuExit");
+
+        saveMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                save();
+            }
+        });
+
+        loadMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                load();
+            }
+        });
+
+        exitMenuItem.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
+        fileMenu.add(saveMenuItem);
+        fileMenu.add(loadMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exitMenuItem);
+
+        menuBar.add(fileMenu);
+        setJMenuBar(menuBar);
 
         setVisible(true);
 
     }
+
+
+
+    public void load() {
+
+        File file = new File(filePath.getText());
+
+        String fileText = "";
+
+        try {
+            fileText = Files.readString(Paths.get(file.getPath()));
+        } catch (IOException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        }
+
+        textArea.setText(fileText);
+
+    }
+
+    public void save() {
+
+        File file = new File(filePath.getText());
+
+        try (FileWriter fileWriter = new FileWriter(file)) {
+
+            fileWriter.write(textArea.getText());
+            fileWriter.flush();
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+    }
+
+
 }
